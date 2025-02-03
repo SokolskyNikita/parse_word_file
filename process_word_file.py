@@ -7,14 +7,12 @@ import json
 from abc import ABC, abstractmethod
 from pathlib import Path
 from docx import Document
-from docx.text.paragraph import Paragraph
 from docx.text.run import Run
 from openai import OpenAI
 from tqdm import tqdm
 from tenacity import retry, stop_after_attempt, wait_exponential
 from dataclasses import dataclass
 from typing import Optional
-import re
 
 DEFAULT_MODEL = "gpt-4o"
 DEFAULT_MAX_TOKENS = 1000

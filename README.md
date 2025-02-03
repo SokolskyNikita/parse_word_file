@@ -1,16 +1,18 @@
-# Word Document Grammar Parser
+# Word Document Processor
 
-A Python script that processes Microsoft Word documents (.docx) using OpenAI's GPT models to correct grammar or translate text while preserving document formatting.
+A Python script that processes Microsoft Word documents (.docx) using OpenAI's GPT models to either correct grammar or translate text while preserving document formatting.
 
 ## Features
 
-- Processes .docx files while maintaining basic text formatting
-- Grammar correction mode to improve text quality
+- Grammar correction mode to improve English text quality
 - Translation mode supporting any target language
-- Preserves essential formatting including bold, italic, font properties, and more
-- Includes retry logic for API calls
-- Progress bar for tracking document processing
-- Configurable model selection
+- Preserves paragraph formatting including:
+  - Basic text styles (bold, italic)
+  - Font properties (size, color, caps, etc.)
+  - Special text formatting (subscript, superscript, highlighting)
+- Skips paragraphs that are too short to process
+- Built-in retry, delay and exponential backoff to avoid rate limiting by OpenAI
+- Progress tracking with status bar
 
 ## Prerequisites
 
@@ -23,46 +25,44 @@ A Python script that processes Microsoft Word documents (.docx) using OpenAI's G
 2. Install dependencies:
 ```bash
 pip install -r requirements.txt
+# Or if you use uv
+uv pip install --system -r requirements.txt
 ```
-3. Set your OpenAI API key as an environment variable:
+3. Set your OpenAI API key:
 ```bash
 export OPENAI_API_KEY='your-api-key-here'
 ```
 
 ## Usage
 
-Grammar correction:
+Grammar correction (default mode):
 ```bash
-python process_word_file.py input.docx --fix-grammar
+python process_word_file.py document.docx
+# or explicitly
+python process_word_file.py document.docx -fg
 ```
 
 Translation:
 ```bash
-python process_word_file.py input.docx --translate-to "French"
+python process_word_file.py document.docx -t French
+python process_word_file.py document.docx -t Russian
 ```
 
-With custom output path:
+Custom output path:
 ```bash
-python process_word_file.py input.docx --translate-to "Spanish" -o output.docx
-```
-
-With specific model:
-```bash
-python process_word_file.py input.docx --fix-grammar --model gpt-4
+python process_word_file.py document.docx -t Spanish -o translated.docx
 ```
 
 ## Arguments
 
 - `input`: Path to the input DOCX file
-- `-o, --output`: Output DOCX file path (default: <input>_grammar_fixed.docx or <input>_translated_to_<lang>.docx)
-- `--model`: OpenAI model to use (default: gpt-4o)
-- `--fix-grammar`: Enable grammar correction mode
-- `--translate-to`: Translate the text to the specified language (e.g., "French", "Spanish", "Japanese")
-
-Note: You must specify either `--fix-grammar` or `--translate-to`, but not both.
+- `-fg, --fix-grammar`: Use grammar correction mode (default)
+- `-t LANG, --translate LANG`: Translate to specified language
+- `-o PATH, --output PATH`: Custom output file path
+- `--model MODEL`: OpenAI model to use (default: gpt-4o)
 
 ## Output
 
-The script creates a new Word document with processed text while maintaining the basic formatting of the original document. The output filename will depend on the processing mode:
-- For grammar correction: `<input>_grammar_fixed.docx`
-- For translation: `<input>_translated_to_<language>.docx` 
+The script creates a new Word document with processed text while maintaining the original formatting. Default output filenames are:
+- Grammar mode: `<input>_grammar_fixed.docx`
+- Translation mode: `<input>_translated_to_<language>.docx` 
